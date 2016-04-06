@@ -47,18 +47,24 @@ public class CreateAccountActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_account);
     }
 
+    /*
+    Registers the user and then leads the user to the groups page.
+    Method is evoked when the register button is clicked.
+    */
     public void register(View view) {
         email = (EditText) findViewById(R.id.email);
         name = (EditText) findViewById(R.id.name);
         password = (EditText) findViewById(R.id.password);
         confirm_password = (EditText) findViewById(R.id.confirm_password);
 
-        //if form is valid, create account and then login
+        //if form is valid, create account and then login TODO: open up groups page activiy
         if(isFormValid()){
 
         }
 
     }
+
+    //checks if all contents of the form are filled out correctly
     private boolean isFormValid(){
 
         boolean valid = true;
@@ -94,13 +100,14 @@ public class CreateAccountActivity extends AppCompatActivity {
         }
         return valid;
     }
+
+    //checks to see if the email is valid
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("@");
     }
 
+    //checks for password validity
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() > 4;
     }
 }

@@ -49,18 +49,22 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
     }
 
-    //logs in user
+    /*
+    Leads the user to the groups page if user has valid credentials.
+    Method is evoked when the Login button is clicked.
+    */
     public void login(View view) {
         email = (EditText) findViewById(R.id.email);
         password = (EditText) findViewById(R.id.password);
 
         //if form is valid, proceed to login
         if(isFormValid()){
-
+            Intent intent = new Intent(this, MyGroups.class);
+            startActivity(intent);
         }
     }
 
-    //switches to the create account activity
+    //Switches to the create account activity
     public void createAccount(View view){
         Intent intent = new Intent(this, CreateAccountActivity.class);
         startActivity(intent);
