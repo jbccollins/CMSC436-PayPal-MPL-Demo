@@ -49,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
     }
 
+    //logs in user
     public void login(View view) {
         email = (EditText) findViewById(R.id.email);
         password = (EditText) findViewById(R.id.password);
@@ -58,10 +59,14 @@ public class LoginActivity extends AppCompatActivity {
 
         }
     }
+
+    //switches to the create account activity
     public void createAccount(View view){
         Intent intent = new Intent(this, CreateAccountActivity.class);
         startActivity(intent);
     }
+
+    //checks if the login form is valid
     private boolean isFormValid(){
 
         boolean valid = true;
