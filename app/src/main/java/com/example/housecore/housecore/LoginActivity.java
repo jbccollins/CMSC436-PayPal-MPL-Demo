@@ -3,6 +3,7 @@ package com.example.housecore.housecore;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -32,6 +33,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.Manifest.permission.PACKAGE_USAGE_STATS;
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
@@ -39,18 +41,7 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class LoginActivity extends AppCompatActivity {
 
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
-    private static final int REQUEST_READ_CONTACTS = 0;
-
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
+    EditText email, password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,18 +49,45 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
     }
 
-     /* Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
-    private void attemptLogin() {
-    }
+    public void login(View view) {
+        email = (EditText) findViewById(R.id.email);
+        password = (EditText) findViewById(R.id.password);
 
+        //if form is valid, proceed to login
+        if(isFormValid()){
+
+        }
+    }
+    public void createAccount(View view){
+        Intent intent = new Intent(this, CreateAccountActivity.class);
+        startActivity(intent);
+    }
+    private boolean isFormValid(){
+
+        boolean valid = true;
+        //form handling
+        if(!isEmailValid(email.getText().toString())) {
+            email.setError(getResources().getString(R.string.error_invalid_email));
+            valid = false;
+        }
+        if(email.getText().toString().trim().length() == 0 ) {
+            email.setError(getResources().getString(R.string.error_field_required));
+            valid = false;
+        }
+        if(!isPasswordValid(password.getText().toString())) {
+            password.setError(getResources().getString(R.string.error_invalid_password));
+            valid = false;
+        }
+        if(password.getText().toString().trim().length() == 0) {
+            password.setError(getResources().getString(R.string.error_field_required));
+            valid = false;
+        }
+        return valid;
+    }
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
         return email.contains("@");
     }
-
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
         return password.length() > 4;
