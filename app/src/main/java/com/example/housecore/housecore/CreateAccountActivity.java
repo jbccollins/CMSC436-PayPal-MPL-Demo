@@ -3,7 +3,6 @@ package com.example.housecore.housecore;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -33,53 +32,49 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.Manifest.permission.PACKAGE_USAGE_STATS;
 import static android.Manifest.permission.READ_CONTACTS;
 
-/**
- * A login screen that offers login via email/password.
+/*
+Allows user to create an account
  */
-public class LoginActivity extends AppCompatActivity {
+public class CreateAccountActivity extends AppCompatActivity {
 
-    EditText email, password;
+    EditText email, name, password, confirm_password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_create_account);
     }
 
     /*
-    Leads the user to the groups page if user has valid credentials.
-    Method is evoked when the Login button is clicked.
+    Registers the user and then leads the user to the groups page.
+    Method is evoked when the register button is clicked.
     */
-    public void login(View view) {
+    public void register(View view) {
         email = (EditText) findViewById(R.id.email);
+        name = (EditText) findViewById(R.id.name);
         password = (EditText) findViewById(R.id.password);
+        confirm_password = (EditText) findViewById(R.id.confirm_password);
 
-        //if form is valid, proceed to login
+        //if form is valid, create account and then login TODO: open up groups page activiy
         if(isFormValid()){
-            Intent intent = new Intent(this, MyGroups.class);
-            startActivity(intent);
+
         }
+
     }
 
-    //Switches to the create account activity
-    public void createAccount(View view){
-        Intent intent = new Intent(this, CreateAccountActivity.class);
-        startActivity(intent);
-    }
-
-    //checks if the login form is valid
+    //checks if all contents of the form are filled out correctly
     private boolean isFormValid(){
 
         boolean valid = true;
+
         //form handling
         if(!isEmailValid(email.getText().toString())) {
             email.setError(getResources().getString(R.string.error_invalid_email));
             valid = false;
         }
-        if(email.getText().toString().trim().length() == 0 ) {
+        if(email.getText().toString().trim().length() == 0) {
             email.setError(getResources().getString(R.string.error_field_required));
             valid = false;
         }
@@ -91,16 +86,29 @@ public class LoginActivity extends AppCompatActivity {
             password.setError(getResources().getString(R.string.error_field_required));
             valid = false;
         }
+        if(name.getText().toString().trim().length() == 0) {
+            name.setError(getResources().getString(R.string.error_field_required));
+            valid = false;
+        }
+        if(!confirm_password.getText().toString().equals(password.getText().toString())) {
+            confirm_password.setError(getResources().getString(R.string.mismatching_passwords));
+            valid = false;
+        }
+        if(confirm_password.getText().toString().trim().length() == 0) {
+            confirm_password.setError(getResources().getString(R.string.error_field_required));
+            valid = false;
+        }
         return valid;
     }
+
+    //checks to see if the email is valid
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("@");
     }
+
+    //checks for password validity
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
         return password.length() > 4;
     }
-
 }
 
