@@ -2,17 +2,14 @@ package com.example.housecore.housecore;
 
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
@@ -59,6 +56,7 @@ public class PayActivity extends AppCompatActivity implements OnClickListener {
     TextView labelSimplePayment;
     LinearLayout layoutSimplePayment;
     CheckoutButton launchSimplePayment;
+    LinearLayout paypalButtonWrapper;
     Button exitApp;
     TextView title;
     TextView info;
@@ -115,85 +113,15 @@ public class PayActivity extends AppCompatActivity implements OnClickListener {
             }
         };
         libraryInitializationThread.start();
-
-
-        LinearLayout content = new LinearLayout(this);
-        content.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
-        content.setGravity(Gravity.CENTER_HORIZONTAL);
-        content.setOrientation(LinearLayout.VERTICAL);
-        content.setPadding(10, 10, 10, 10);
-        content.setBackgroundColor(Color.WHITE);
-
-        layoutSimplePayment = new LinearLayout(this);
-        layoutSimplePayment.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        layoutSimplePayment.setGravity(Gravity.CENTER_HORIZONTAL);
-        layoutSimplePayment.setOrientation(LinearLayout.VERTICAL);
-        layoutSimplePayment.setPadding(0, 5, 0, 5);
-
-        labelSimplePayment = new TextView(this);
-        labelSimplePayment.setGravity(Gravity.CENTER_HORIZONTAL);
-        labelSimplePayment.setText("HouseCore");
-        labelSimplePayment.setTextColor(Color.RED);
-        labelSimplePayment.setTextSize(45.0f);
-
-        layoutSimplePayment.addView(labelSimplePayment);
-        //        labelSimplePayment.setVisibility(View.GONE);
-
-        content.addView(layoutSimplePayment);
-
-        LinearLayout layoutKey = new LinearLayout(this);
-        layoutKey.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        layoutKey.setGravity(Gravity.CENTER_HORIZONTAL);
-        layoutKey.setOrientation(LinearLayout.VERTICAL);
-        layoutKey.setPadding(0, 1, 0, 5);
-
-        title = new TextView(this);
-        title.setLayoutParams(new LinearLayout.LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT));
-        title.setPadding(0, 5, 0, 5);
-        title.setGravity(Gravity.CENTER_HORIZONTAL);
-        title.setTextSize(30.0f);
-        title.setVisibility(View.GONE);
-        content.addView(title);
-
-        info = new TextView(this);
-        info.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        info.setPadding(0, 5, 0, 5);
-        info.setGravity(Gravity.CENTER_HORIZONTAL);
-        info.setTextSize(20.0f);
-        info.setVisibility(View.VISIBLE);
-        info.setText("Please Wait! Initializing Paypal...");
-        info.setTextColor(Color.BLACK);
-        content.addView(info);
-
-        extra = new TextView(this);
-        extra.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        extra.setPadding(0, 5, 0, 5);
-        extra.setGravity(Gravity.CENTER_HORIZONTAL);
-        extra.setTextSize(12.0f);
-        extra.setVisibility(View.GONE);
-        content.addView(extra);
-
-        LinearLayout layoutExit = new LinearLayout(this);
-        layoutExit.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        layoutExit.setGravity(Gravity.CENTER_HORIZONTAL);
-        layoutExit.setOrientation(LinearLayout.VERTICAL);
-        layoutExit.setPadding(0, 15, 0, 5);
-
-        exitApp = new Button(this);
-        exitApp.setLayoutParams(new LayoutParams(200, LayoutParams.WRAP_CONTENT)); //Semi mimic PP button sizes
-        exitApp.setOnClickListener(this);
-        exitApp.setText("Exit");
-        layoutExit.addView(exitApp);
-        content.addView(layoutExit);
-
-        appVersion = new TextView(this);
-        appVersion.setGravity(Gravity.CENTER_HORIZONTAL);
-        appVersion.setPadding(0, -5, 0, 0);
-        appVersion.setText("\n\nSimple Demo Build " + build + "\nMPL Library Build " + PayPal.getBuild());
-        content.addView(appVersion);
-        appVersion.setVisibility(View.GONE);
-
-        setContentView(content);
+        
+        setContentView(R.layout.activity_pay);
+        layoutSimplePayment = (LinearLayout)findViewById(R.id.layoutSimplePayment);
+        labelSimplePayment = (TextView)findViewById(R.id.labelSimplePayment);
+        title = (TextView)findViewById(R.id.title);
+        info = (TextView)findViewById(R.id.info);
+        extra = (TextView)findViewById(R.id.extra);
+        exitApp = (Button)findViewById(R.id.exitApp);
+        paypalButtonWrapper = (LinearLayout)findViewById(R.id.paypalButtonWrapper);
     }
 
     public void setupButtons() {
@@ -204,7 +132,7 @@ public class PayActivity extends AppCompatActivity implements OnClickListener {
         // have the onClick() method below.
         launchSimplePayment.setOnClickListener(this);
         // The CheckoutButton is an android LinearLayout so we can add it to our display like any other View.
-        layoutSimplePayment.addView(launchSimplePayment);
+        paypalButtonWrapper.addView(launchSimplePayment);
 
         // Get the CheckoutButton. There are five different sizes. The text on the button can either be of type TEXT_PAY or TEXT_DONATE.
 

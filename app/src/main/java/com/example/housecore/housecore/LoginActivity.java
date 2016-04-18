@@ -28,16 +28,18 @@ public class LoginActivity extends AppCompatActivity {
 
         //if form is valid, proceed to login
         if(isFormValid()){
+            /*
             Intent intent = new Intent(this, MyGroups.class);
             startActivity(intent);
-            /*
+            */
+
                 // This is how you should call the PayActivity class.
                 Intent payIntent = new Intent(getBaseContext(), PayActivity.class);
                 payIntent.putExtra("PAYMENT_AMOUNT", "5");
                 payIntent.putExtra("PAYMENT_ID", "sdffsg-fjeo33-lkjn2-on0h7n");
                 payIntent.putExtra("RECIPIENT_EMAIL", "housecore_testtwo@gmail.com");
                 startActivity(payIntent);
-             */
+
         }
     }
 

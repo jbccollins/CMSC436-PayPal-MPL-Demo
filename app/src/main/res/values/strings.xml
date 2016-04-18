@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">HouseCore</string>
+
+    <!-- Strings related to MPL Demo -->
+    <string name="mpl_demo">MPL Demo</string>
+    <string name="initializing_paypal">Please Wait. Initializing PayPal Library...</string>
+    <string name="exit_app">Exit</string>
+
     <string name="title_activity_create_account">CreateAccount</string>
 
     <!-- Strings related to login/Create account -->
