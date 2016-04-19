@@ -5,23 +5,22 @@ import com.paypal.android.MEP.PayPalResultDelegate;
 import java.io.Serializable;
 
 public class ResultDelegate implements PayPalResultDelegate, Serializable {
-    private static final long serialVersionUID = 10001L;
-    private static String uuid;
+    private static String paymentID;
 
     public ResultDelegate(){
         super();
     }
-    public ResultDelegate(String uuid){
+    public ResultDelegate(String paymentID){
         super();
-        this.uuid = uuid;
+        this.paymentID = paymentID;
     }
 
-    public String getUUID(){
-        return this.uuid;
+    public String getPaymentID(){
+        return this.paymentID;
     }
 
     public void onPaymentSucceeded(String payKey, String paymentStatus) {
-        // TODO: update database marking payment as successful
+        // TODO: update database marking payment as successful using paymentID
         PayActivity.resultTitle = "SUCCESS";
         PayActivity.resultInfo = "You have successfully completed your transaction.";
         PayActivity.resultExtra = "Key: " + payKey;
@@ -30,7 +29,7 @@ public class ResultDelegate implements PayPalResultDelegate, Serializable {
 
     public void onPaymentFailed(String paymentStatus, String correlationID,
                                 String payKey, String errorID, String errorMessage) {
-        // TODO: update database marking payment as failed
+        // TODO: update database marking payment as failed using paymentID
         PayActivity.resultTitle = "FAILURE";
         PayActivity.resultInfo = errorMessage;
         PayActivity.resultExtra = "Error ID: " + errorID + "\nCorrelation ID: "
@@ -39,7 +38,7 @@ public class ResultDelegate implements PayPalResultDelegate, Serializable {
 
 
     public void onPaymentCanceled(String paymentStatus) {
-        // TODO: update database marking payment as failed
+        // TODO: update database marking payment as failed using paymentID
         PayActivity.resultTitle = "CANCELED";
         PayActivity.resultInfo = "The transaction has been cancelled.";
         PayActivity.resultExtra = "";

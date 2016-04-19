@@ -6,13 +6,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -22,37 +20,25 @@ import com.paypal.android.MEP.PayPalPayment;
 
 import java.math.BigDecimal;
 
-//import android.widget.LinearLayout.LayoutParams;
-
-
-/*
-public class PayActivity extends AppCompatActivity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-    }
-}
-*/
 public class PayActivity extends AppCompatActivity implements OnClickListener {
 
-    // The PayPal environment to be used - can also be ENV_NONE and ENV_LIVE
+    // The PayPal environment to be used - can also be ENV_NONE and ENV_LIVE.
     private static final int environment = PayPal.ENV_SANDBOX;
     // The ID of your application that you received from PayPal. This is the default sandbox ID right now.
     private static final String appID = "APP-80W284485P519543T";
-    // This is passed in for the startActivityForResult() android function, the value used is up to you
+    // This is passed in for the startActivityForResult() android function, the value used is up to you.
     private static final int request = 1;
-
-    public static final String build = "10.12.09.8053";
-
+    // The amount that will be paid.
     private static BigDecimal PAYMENT_AMOUNT = null;
+    // An ID used to update a database should you so choose to use it.
     private static String PAYMENT_ID = null;
+    // The recipient of the payment.
     private static String RECIPIENT_EMAIL = null;
 
     protected static final int INITIALIZE_SUCCESS = 0;
     protected static final int INITIALIZE_FAILURE = 1;
 
+    // Rather than call findViewByID all the time just store commonly used views.
     TextView labelSimplePayment;
     LinearLayout layoutSimplePayment;
     CheckoutButton launchSimplePayment;
@@ -61,19 +47,15 @@ public class PayActivity extends AppCompatActivity implements OnClickListener {
     TextView title;
     TextView info;
     TextView extra;
-    TextView labelKey;
-    TextView appVersion;
-    EditText enterPreapprovalKey;
 
     public static String resultTitle;
     public static String resultInfo;
     public static String resultExtra;
 
-    Handler hRefresh = new Handler() {
+    private Handler hRefresh = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-
                 case INITIALIZE_SUCCESS:
                     setupButtons();
                     break;
@@ -92,18 +74,15 @@ public class PayActivity extends AppCompatActivity implements OnClickListener {
             PAYMENT_AMOUNT = new BigDecimal(extras.getString("PAYMENT_AMOUNT"));
             PAYMENT_ID = extras.getString("PAYMENT_ID");
             RECIPIENT_EMAIL = extras.getString("RECIPIENT_EMAIL");
-            //Log.v("EXTRA", PAYMENT_ID);
-            //Log.v("EXTRA", RECIPIENT_EMAIL);
         } else {
-            Log.v("EXTRA", "FAILED");
             hRefresh.sendEmptyMessage(INITIALIZE_FAILURE);
         }
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        // Initialization cannot be done on the main thread.
         Thread libraryInitializationThread = new Thread() {
             @Override
             public void run() {
                 initLibrary();
-
                 // The library is initialized so let's create our CheckoutButton and update the UI.
                 if (PayPal.getInstance().isLibraryInitialized()) {
                     hRefresh.sendEmptyMessage(INITIALIZE_SUCCESS);
@@ -113,7 +92,7 @@ public class PayActivity extends AppCompatActivity implements OnClickListener {
             }
         };
         libraryInitializationThread.start();
-        
+        // Display the layout and setup commonly used variables.
         setContentView(R.layout.activity_pay);
         layoutSimplePayment = (LinearLayout)findViewById(R.id.layoutSimplePayment);
         labelSimplePayment = (TextView)findViewById(R.id.labelSimplePayment);
@@ -126,88 +105,82 @@ public class PayActivity extends AppCompatActivity implements OnClickListener {
 
     public void setupButtons() {
         PayPal pp = PayPal.getInstance();
-        // Get the CheckoutButton. There are five different sizes. The text on the button can either be of type TEXT_PAY or TEXT_DONATE.
+        // Get the CheckoutButton. There are five different sizes.
+        // The text on the button can either be of type TEXT_PAY or TEXT_DONATE.
         launchSimplePayment = pp.getCheckoutButton(this, PayPal.BUTTON_194x37, CheckoutButton.TEXT_PAY);
-        // You'll need to have an OnClickListener for the CheckoutButton. For this application, MPL_Example implements OnClickListener and we
+        // You'll need to have an OnClickListener for the CheckoutButton.
+        // For this application, PayActivity implements OnClickListener and we
         // have the onClick() method below.
         launchSimplePayment.setOnClickListener(this);
         // The CheckoutButton is an android LinearLayout so we can add it to our display like any other View.
         paypalButtonWrapper.addView(launchSimplePayment);
-
-        // Get the CheckoutButton. There are five different sizes. The text on the button can either be of type TEXT_PAY or TEXT_DONATE.
-
-        // Show our labels and the preapproval EditText.
+        // Show our labels
         labelSimplePayment.setVisibility(View.VISIBLE);
-
-
         info.setText("");
         info.setVisibility(View.GONE);
     }
 
     public void showFailure() {
         title.setText("FAILURE");
-        info.setText("Could not initialize the PayPal library.");
+        info.setText(R.string.pp_initialization_failure);
         title.setVisibility(View.VISIBLE);
         info.setVisibility(View.VISIBLE);
     }
 
     private void initLibrary() {
+        // Only need to initialize the library once.
         PayPal pp = PayPal.getInstance();
-
         if (pp == null) {
+            // Initialize PayPal
             pp = PayPal.initWithAppID(this, appID, environment);
+            // Sender will pay fees. By default this is the receiver.
+            // It's free within the U.S. to send money to family and friends when you use only your PayPal
+            // balance or bank account, or a combination of their PayPal balance and bank account.
+            // So this really shouldn't come into play in our app.
+            pp.setFeesPayer(PayPal.FEEPAYER_SENDER);
+            // Shipping for Peer to Peer payments is pointless.
             pp.setShippingEnabled(false);
-            //pp = PayPal.initWithAppID(this.getBaseContext(), "APP-80W284485P519543T", PayPal.ENV_SANDBOX);
-            /*pp.setLanguage("en_US"); // Sets the language for the library.
-            pp.setCancelUrl("http://google.com");
-            pp.setReturnUrl("http://google.com");*/
         }
     }
 
-    private PayPalPayment exampleSimplePayment() {
-        /*
+    private PayPalPayment simplePayment() {
         // Create a basic PayPalPayment.
         PayPalPayment payment = new PayPalPayment();
+        payment.setSubtotal(PAYMENT_AMOUNT);
         // Sets the currency type for this payment.
         payment.setCurrencyType("USD");
         // Sets the recipient for the payment. This can also be a phone number.
-        payment.setRecipient("housecore_testtwo@gmail.com");
-        */
-        PayPalPayment payment = new PayPalPayment();
-        payment.setSubtotal(PAYMENT_AMOUNT);
-        payment.setCurrencyType("USD");
         payment.setRecipient(RECIPIENT_EMAIL);
-        payment.setCustomID(PAYMENT_ID);
+        // Depending on the payment type the checkout experience can vary slightly.
+        // Set this to personal to avoid fee payments.
+        payment.setPaymentType(PayPal.PAYMENT_TYPE_PERSONAL);
         return payment;
     }
 
     @Override
     public void onClick(View v) {
-
+        // Click handler handles both the PayPal button and the exitApp button
         if (v == launchSimplePayment) {
             // Use our helper function to create the simple payment.
-            PayPalPayment payment = exampleSimplePayment();
+            PayPalPayment payment = simplePayment();
             // Use checkout to create our Intent.
-            //Intent checkoutIntent = PayPal.getInstance().checkout(payment, this, new ResultDelegate());
-            Intent checkoutIntent = PayPal.getInstance().checkout(payment, this, new ResultDelegate());
-
+            Intent checkoutIntent = PayPal.getInstance().checkout(payment, this, new ResultDelegate(PAYMENT_ID));
             // Use the android's startActivityForResult() and pass in our Intent. This will start the library.
             startActivityForResult(checkoutIntent, request);
         } else if (v == exitApp) {
-
             Intent in = new Intent();
             in.putExtra("payment", "unpaid");
-            /*in.putExtra("condition", "false");*/
-            setResult(1, in);//Here I am Setting the Requestcode 1, you can put according to your requirement
+            // Setting the Requestcode 1.
+            setResult(1, in);
             finish();
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode != request)
+        if (requestCode != request) {
             return;
-
+        }
         if (PayActivity.resultTitle == "SUCCESS") {
             Intent in = new Intent();
             in.putExtra("payment", "paid");
@@ -217,14 +190,11 @@ public class PayActivity extends AppCompatActivity implements OnClickListener {
             Intent in = new Intent();
             in.putExtra("payment", "unpaid");
             setResult(22, in);
-            //         finish();
         } else if (PayActivity.resultTitle == "CANCELED") {
             Intent in = new Intent();
             in.putExtra("payment", "unpaid");
             setResult(22, in);
-            //            finish();
         }
-
 
         launchSimplePayment.updateButton();
 
@@ -234,7 +204,6 @@ public class PayActivity extends AppCompatActivity implements OnClickListener {
         info.setVisibility(View.VISIBLE);
         extra.setText(resultExtra);
         extra.setVisibility(View.VISIBLE);
-        //finish();
     }
 
     @Override
