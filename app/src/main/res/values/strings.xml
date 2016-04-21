@@ -1,5 +1,15 @@
 <resources>
-    <string name="app_name">HouseCore</string>
+    <string name="app_name">MPL Demo</string>
+
+    <!-- Strings related to MPL Demo -->
+    <string name="mpl_demo">MPL Demo</string>
+    <string name="initializing_paypal">Please Wait. Initializing PayPal Library...</string>
+    <string name="exit_app">Go Back</string>
+    <string name="enter_email">Enter Recipient Email:</string>
+    <string name="enter_amount">Enter Amount to Pay:</string>
+    <string name="continue_to_payment">Continue</string>
+    <string name="pp_initialization_failure">Could not initialize the PayPal library. Check your application permissions.</string>
+
     <string name="title_activity_create_account">CreateAccount</string>
 
     <!-- Strings related to login/Create account -->
